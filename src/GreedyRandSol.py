@@ -3,7 +3,7 @@ import random
 from src.Solution import Solution
 
 
-def generateGRS(project, seed):
+def constructGRS(project, seed):
     reset(project)
     # Array que representa el esquema
     scheme = []
@@ -62,7 +62,7 @@ def findPred(activity, jobs):
 def isFactible(job, preds, scheme, resources):
     factible = False
     if job not in scheme:
-        factible = alreadyPreds(preds, scheme) and hayRecursos(job, resources)
+        factible = alreadyPreds(preds, scheme) and recNeeded(job, resources)
     return factible
 
 
@@ -79,7 +79,7 @@ def alreadyPreds(preds, scheme):
     return result
 
 
-def hayRecursos(job, resources):
+def recNeeded(job, resources):
     result = False
     neededRec = job.resourceType
     neededQuant = job.resourceQuant

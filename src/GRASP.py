@@ -8,7 +8,7 @@ def startAlgorithm(maxIterations, project, seed):
     bestSol = Solution([], 1000000)
     solutions = []
     for i in range(0, maxIterations):
-        sol = GreedyRandSol.generateGRS(project, seed)
+        sol = GreedyRandSol.constructGRS(project, seed)
         print("Solución creada con una duración de: ", sol.duration)
         solutions.append(sol)
         # if not self.isFactible(sol):
