@@ -3,10 +3,7 @@ import random
 from src.Solution import Solution
 
 
-def constructGRS(project, alphaAux):
-    global minMax
-    global alpha
-    alpha = alphaAux
+def constructGRS(project, alpha):
     reset(project)
     # Array que representa el esquema
     scheme = []
@@ -25,14 +22,16 @@ def constructGRS(project, alphaAux):
     while not finished:
         if candidateList:
             minMax = getMinMax(candidateList)
-            restrictedCL = getRestrictedCandidateList(candidateList)
+            restrictedCL = getRestrictedCandidateList(candidateList, minMax, alpha)
             sig = selectNext(restrictedCL)
             if sig is not None:
                 scheme.append(sig)
         executeActivities(scheme, project, duration)
+        if duration == 0 or len(finishedJobs) == 121:
+            getFinishActivities(scheme, project, duration, finishedJobs)
+        duration = duration + 1
         getFinishActivities(scheme, project, duration, finishedJobs)
         finished = len(finishedJobs) == len(project.jobs)
-        duration = duration + 1
         candidateList = getCandidateListNew(project, duration, finishedJobs, scheme)
         evaluateIncrementalCost(candidateList, duration)
     sol.duration = duration
@@ -44,24 +43,34 @@ def getCandidateListNew(project, duration, finishedJobs, scheme):
     if duration == 0:
         cl.append(project.jobs[0])
     else:
-        succFinished = getSucc(finishedJobs, project.succDicc, project.jobs)
+        succFinished = getSucc(finishedJobs, project.succDicc, project.jobs, scheme)
         for job in succFinished:
-            if isFactibleNew(job, project.resources) and job not in scheme:
+            if isFactibleNew(job, project.resources, scheme, project.predDicc):
                 cl.append(job)
     return cl
 
 
-def getSucc(finishedJobs, succDicc, jobs):
+def getSucc(finishedJobs, succDicc, jobs, scheme):
     succ = []
     for finishedJob in finishedJobs:
         succAux = succDicc[finishedJob.njob]
         for j in succAux:
-            succ.append(jobs[j])
+            if jobs[j] not in scheme:
+                succ.append(jobs[j])
     return succ
 
 
-def isFactibleNew(job, resources):
-    return recNeeded(job, resources)
+def isFactibleNew(job, resources, scheme, predDicc):
+    return alreadyPredsNew(job, scheme, predDicc) and recNeeded(job, resources)
+
+
+def alreadyPredsNew(job, scheme, predDicc):
+    result = True
+    predAux = predDicc[job.njob]
+    for pred in predAux:
+        if not scheme.__contains__(pred):
+            result = False
+    return result
 
 
 def recNeeded(job, resources):
@@ -112,15 +121,14 @@ def getMinMax(cl):
     costs = []
     for job in cl:
         costs.append(job.incrementalCost)
-    minC = min(costs)
-    maxC = max(costs)
-    return [minC, maxC]
+    return [min(costs), max(costs)]
 
 
-def getRestrictedCandidateList(cl):
+def getRestrictedCandidateList(cl, minMax, alpha):
     rcl = []
+    value = minMax[0] + alpha * (minMax[1] - minMax[0])
     for job in cl:
-        if niceCost(job):
+        if job.incrementalCost <= value:
             rcl.append(job)
     return rcl
 
@@ -130,7 +138,7 @@ def getRestrictedCandidateListNew(cl):
     return rcl
 
 
-def niceCost(job):
+def niceCost(job, minMax, alpha):
     result = False
     value = minMax[0] + alpha * (minMax[1] - minMax[0])
     if job.incrementalCost <= value:
@@ -146,48 +154,3 @@ def reset(project):
         job.initTime = 0
         job.finishTime = 0
     print("Reset complete")
-
-
-####### OLD ######
-
-def getCandidateList(scheme, project):
-    factibles = []
-    for i in range(0, len(project.jobs)):
-        job = project.jobs[i]
-        preds = findPred(i, project.jobs)
-        if isFactible(job, preds, scheme, project.resources):
-            factibles.append(job)
-            # printFactibles.append(job.njob)
-    return factibles
-
-
-def findPred(activity, jobs):
-    result = []
-    for i in range(0, len(jobs)):
-        j = jobs[i]
-        succs = []
-        for k in range(0, len(j.succ)):
-            succs.append(j.succ[k])
-        if succs.__contains__(activity):
-            result.append(j)
-    return result
-
-
-def isFactible(job, preds, scheme, resources):
-    factible = False
-    if job not in scheme:
-        factible = alreadyPreds(preds, scheme) and recNeeded(job, resources)
-    return factible
-
-
-def alreadyPreds(preds, scheme):
-    result = True
-    i = 0
-    while result and i < len(preds):
-        if preds[i] not in scheme:
-            result = False
-        i = i + 1
-    for j in range(0, len(preds)):
-        if not preds[j].finished:
-            result = False
-    return result

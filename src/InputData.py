@@ -29,6 +29,19 @@ def getDyr(numbersAux):
     return tupla
 
 
+# Creación del diccionario de predecesores
+def getPred(jobs):
+    predDicc = {}
+    for j in jobs:
+        preds = []
+        for k in jobs:
+            succ = k.succ
+            if succ.__contains__(j.njob):
+                preds.append(k)
+        predDicc[j.njob] = preds
+    return predDicc
+
+
 # Lectura de los datos del fichero j1201_10.sm
 def readFile(filepath, projectName):
     # Variables que vamos a utilizar
@@ -62,6 +75,8 @@ def readFile(filepath, projectName):
         r = Resource(j + 1, resourcesAux[j])
         resources.append(r)
 
+    # Diccionario de predecesores
+    predDicc = getPred(jobs)
     # Creación del objeto Project
-    project = Project(projectName, jobs, resources, succDicc)
+    project = Project(projectName, jobs, resources, succDicc, predDicc)
     return project
