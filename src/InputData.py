@@ -32,7 +32,7 @@ def getDyr(numbersAux):
 # Lectura de los datos del fichero j1201_10.sm
 def readFile(filepath, projectName):
     # Variables que vamos a utilizar
-    global ramdomValue, horizon, duedate, tardcost
+    succDicc = {}
 
     # Abrimos el fichero en modo lectura
     fp = open(filepath, "r")
@@ -51,6 +51,7 @@ def readFile(filepath, projectName):
         if numbers and numbersAux:
             job = Job(numbers, dyr)
             jobs.append(job)
+            succDicc[job.njob] = job.succ
 
     # Obtención de los recursos
     resources = []
@@ -62,5 +63,5 @@ def readFile(filepath, projectName):
         resources.append(r)
 
     # Creación del objeto Project
-    project = Project(projectName, jobs, resources)
+    project = Project(projectName, jobs, resources, succDicc)
     return project

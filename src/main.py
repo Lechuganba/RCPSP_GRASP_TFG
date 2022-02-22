@@ -16,8 +16,11 @@ if __name__ == '__main__':
     # print("Introduce el número de iteraciones para el algoritmo:")
     # maxIterations = int(input())
     maxIterations = 10
-    seed = random.random()
+    # print("Introduce el valor de alfa para el algoritmo, debe ser entre 0 y 1:")
+    # alpha = int(input())
+    alpha = 0.5
+    # seed = random.random()
     print("Comenzamos el algoritmo")
-    bestSol = GRASP.startAlgorithm(maxIterations, project, seed)
+    bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
     print("Algoritmo terminado")
     print("La mejor solución ha sido el esquema con tiempo = ", bestSol.duration)

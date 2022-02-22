@@ -13,3 +13,4 @@ class Job:
         self.finishTime = 0
         self.finished = False
         self.executing = False
+        self.incrementalCost = 0
