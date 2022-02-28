@@ -1,4 +1,3 @@
-import random
 import InputData
 from src import GRASP
 

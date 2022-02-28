@@ -77,6 +77,7 @@ def readFile(filepath, projectName):
 
     # Diccionario de predecesores
     predDicc = getPred(jobs)
+    resDicc = {}
     # Creación del objeto Project
-    project = Project(projectName, jobs, resources, succDicc, predDicc)
+    project = Project(projectName, jobs, resources, succDicc, predDicc, resDicc)
     return project

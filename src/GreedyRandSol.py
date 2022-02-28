@@ -16,7 +16,7 @@ def constructGRS(project, alpha):
     # Finished jobs
     finishedJobs = []
     # Candidate List
-    candidateList = getCandidateListNew(project, duration, finishedJobs, scheme)
+    candidateList = getCandidateList(project, duration, finishedJobs, scheme)
     # Evaluate incremental cost
     evaluateIncrementalCost(candidateList, duration)
     while not finished:
@@ -28,24 +28,26 @@ def constructGRS(project, alpha):
                 scheme.append(sig)
         executeActivities(scheme, project, duration)
         if duration == 0 or len(finishedJobs) == 121:
+            addEntryRecDicc(duration, project)
             getFinishActivities(scheme, project, duration, finishedJobs)
         duration = duration + 1
+        addEntryRecDicc(duration, project)
         getFinishActivities(scheme, project, duration, finishedJobs)
         finished = len(finishedJobs) == len(project.jobs)
-        candidateList = getCandidateListNew(project, duration, finishedJobs, scheme)
+        candidateList = getCandidateList(project, duration, finishedJobs, scheme)
         evaluateIncrementalCost(candidateList, duration)
     sol.duration = duration
     return sol
 
 
-def getCandidateListNew(project, duration, finishedJobs, scheme):
+def getCandidateList(project, duration, finishedJobs, scheme):
     cl = []
     if duration == 0:
         cl.append(project.jobs[0])
     else:
         succFinished = getSucc(finishedJobs, project.succDicc, project.jobs, scheme)
         for job in succFinished:
-            if isFactibleNew(job, project.resources, scheme, project.predDicc):
+            if isFactible(job, project.resources, scheme, project.predDicc):
                 cl.append(job)
     return cl
 
@@ -60,11 +62,11 @@ def getSucc(finishedJobs, succDicc, jobs, scheme):
     return succ
 
 
-def isFactibleNew(job, resources, scheme, predDicc):
-    return alreadyPredsNew(job, scheme, predDicc) and recNeeded(job, resources)
+def isFactible(job, resources, scheme, predDicc):
+    return alreadyPreds(job, scheme, predDicc) and recNeeded(job, resources)
 
 
-def alreadyPredsNew(job, scheme, predDicc):
+def alreadyPreds(job, scheme, predDicc):
     result = True
     predAux = predDicc[job.njob]
     for pred in predAux:
@@ -154,3 +156,10 @@ def reset(project):
         job.initTime = 0
         job.finishTime = 0
     print("Reset complete")
+
+
+def addEntryRecDicc(duration, project):
+    nres = []
+    for rec in project.resources:
+        nres.append(rec.quantity)
+    project.resDicc[duration] = nres
