@@ -1,5 +1,4 @@
 from src import GreedyRandSol
-import random
 
 from src.GreedyRandSol import alreadyPreds, recNeeded
 from src.Solution import Solution
@@ -24,12 +23,11 @@ def localSearch(sol, project):
     finished = False
     newDuration = 0
     while not finished:
-        jobsOnTimestep = getJobsOnTimestep(sol, newDuration)
-        for job in jobsOnTimestep:
-            if canExecuteBefore(job, sol, newDuration, project) and job.initTime > newDuration:
-                actualizarTiempos(sol)
-                # actualizar los tiempos
-        newDuration = newDuration + 1
+        for job in sol.scheme:
+            if canExecuteBefore(job, sol, newDuration, project):
+                refreshTimesAndResources(job, newDuration, sol, project)
+            # actualizar los tiempos
+        # newDuration = newDuration + 1
     return sol
 
 
@@ -44,10 +42,14 @@ def getJobsOnTimestep(sol, newDuration):
 def canExecuteBefore(job, sol, newDuration, project):
     result = False
     if job.njob > 0:
-        if alreadyPreds(job, sol.scheme, project.predDicc) and recNeededAux(job, newDuration,
-                                                                            project.resDicc):
+        if alreadyPredsAux(job, sol.scheme, project.predDicc) \
+                and recNeededAux(job, project.resDicc):
             result = True
     return result
+
+
+def alreadyPredsAux(job, scheme, predDicc):
+    return 0
 
 
 def recNeededAux(job, newDuration, resDicc):
@@ -60,7 +62,18 @@ def recNeededAux(job, newDuration, resDicc):
     return result
 
 
-def actualizarTiempos(jobs):
+def refreshTimesAndResources(job, newDuration, sol, project):
+    refreshJobTimes(job, newDuration)
+    refreshResourceDicc(project)
+    return 0
+
+
+def refreshJobTimes(job, newDuration):
+    job.initTime = newDuration
+    job.finishTime = newDuration + job.duration
+
+
+def refreshResourceDicc(project):
     return 0
 
 
