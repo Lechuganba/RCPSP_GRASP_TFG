@@ -79,7 +79,6 @@ def recNeeded(job, resources):
     result = False
     neededRec = job.resourceType
     neededQuant = job.resourceQuant
-    # print("Comprobando recursos de: ", job.njob)
     if resources[neededRec - 1].quantity >= neededQuant:
         result = True
     return result
