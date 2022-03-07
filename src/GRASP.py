@@ -25,8 +25,10 @@ def localSearchNew(sol, project):
     for job in sol.scheme:
         can = canExecuteBeforeNew(job, sol, project, newScheme, finishedDicc)
         if can[0]:
-            actualizaTiempos(job, can[1])
+            actualizaTiemposyRec(job, can[1], project.resDicc)
         entryProjectDicc(job, finishedDicc)
+    sol.duration = project.jobs[len(project.jobs) - 1].finishTime
+    print("LocalSearch con nuevo mejor tiempo = ", sol.duration)
     return sol
 
 
@@ -55,17 +57,17 @@ def canExecuteBeforeNew(job, sol, project, newScheme, finishedDicc):
 def canExecuteOnTimestep(timeStep, job, project, sol, newScheme, finishedDicc):
     result = False
     if timeStep > 0 and timeStep != job.initTime:
-        if alreadyPredsNew(job, newScheme, project.predDicc, finishedDicc) and recNeededNew(timeStep, job, project.resDicc):
+        if alreadyPredsNew(job, newScheme, project.predDicc, finishedDicc, timeStep) \
+                and recNeededNew(timeStep, job, project.resDicc):
             result = True
     return result
 
 
-def alreadyPredsNew(job, newScheme, predDicc, finishedDicc):
+def alreadyPredsNew(job, newScheme, predDicc, finishedDicc, timeStep):
     result = True
     predAux = predDicc[job.njob]
     for pred in predAux:
-        finishedOnTime = finishedDicc[pred.finishTime]
-        if not finishedOnTime.__contains__(pred):
+        if pred.finishTime > timeStep:
             result = False
     return result
 
@@ -80,13 +82,23 @@ def recNeededNew(timeStep, job, resDicc):
     return result
 
 
-def actualizaTiempos(job, newTime):
+def actualizaTiemposyRec(job, newTime, resDicc):
+    oldInitTime = job.initTime
     job.initTime = newTime
-    job.finishTime = newTime + job.duration
+    oldFinishTime = job.finishTime
+    newFinishTime = newTime + job.duration
+    job.finishTime = newFinishTime
 
+    neededRec = job.resourceType
+    neededQuant = job.resourceQuant
 
-def desencadenamiento(sol, project):
-    return 0
+    for timeStep in range(oldInitTime + 1, oldFinishTime + 1):
+        resTimestep = resDicc[timeStep]
+        resTimestep[neededRec - 1] = resTimestep[neededRec - 1] + neededQuant
+
+    for timeStep in range(newTime + 1, newFinishTime + 1):
+        resTimestep = resDicc[timeStep]
+        resTimestep[neededRec - 1] = resTimestep[neededRec - 1] - neededQuant
 
 
 ###### OLD ######
