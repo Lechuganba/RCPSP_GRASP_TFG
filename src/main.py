@@ -22,4 +22,4 @@ if __name__ == '__main__':
     print("Comenzamos el algoritmo")
     bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
     print("Algoritmo terminado")
-    print("La mejor solución ha sido el esquema con tiempo = ", bestSol.duration)
+    print("La mejor solución ha sido el esquema con tiempo = ", bestSol[0].duration)
