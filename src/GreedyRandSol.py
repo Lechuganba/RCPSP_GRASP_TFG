@@ -3,6 +3,7 @@ import random
 from src.Solution import Solution
 
 
+# Método que contruye la solución
 def constructGRS(project, alpha):
     reset(project)
     # Array que representa el esquema
@@ -40,6 +41,7 @@ def constructGRS(project, alpha):
     return sol
 
 
+# Método que obtiene la lista de candidatos
 def getCandidateList(project, duration, finishedJobs, scheme):
     cl = []
     if duration == 0:
@@ -52,6 +54,7 @@ def getCandidateList(project, duration, finishedJobs, scheme):
     return cl
 
 
+# Método que obtiene los sucesores de un job
 def getSucc(finishedJobs, succDicc, jobs, scheme):
     succ = []
     for finishedJob in finishedJobs:
@@ -62,10 +65,12 @@ def getSucc(finishedJobs, succDicc, jobs, scheme):
     return succ
 
 
+# Método que comprueba si un job se puede ejecutar
 def isFactible(job, resources, scheme, predDicc):
     return alreadyPreds(job, scheme, predDicc) and recNeeded(job, resources)
 
 
+# Método que comprueba si los predecesores de un job han terminado de ejecutarse
 def alreadyPreds(job, scheme, predDicc):
     result = True
     predAux = predDicc[job.njob]
@@ -75,6 +80,7 @@ def alreadyPreds(job, scheme, predDicc):
     return result
 
 
+# Método que comprueba si los recursos que necesita para ejecutarse están disponibles
 def recNeeded(job, resources):
     result = False
     neededRec = job.resourceType
@@ -84,11 +90,13 @@ def recNeeded(job, resources):
     return result
 
 
+# Método que evalúa el coste incremental de ejecutar un job
 def evaluateIncrementalCost(cl, duration):
     for job in cl:
         job.incrementalCost = duration + job.duration
 
 
+# Método que selecciona el siguiente de forma aleatoria
 def selectNext(factibles):
     sig = None
     if factibles:
@@ -96,6 +104,7 @@ def selectNext(factibles):
     return sig
 
 
+# Método ejecuta las actividades en un timeStep
 def executeActivities(scheme, project, duration):
     for job in scheme:
         if not job.finished and not job.executing:
@@ -107,6 +116,7 @@ def executeActivities(scheme, project, duration):
             project.resources[neededRec - 1].quantity = project.resources[neededRec - 1].quantity - neededQuant
 
 
+# Método que obtiene las actividades que han termiando de ejecutarse
 def getFinishActivities(scheme, project, duration, finishedActivities):
     for job in scheme:
         if duration == job.finishTime:
@@ -118,6 +128,7 @@ def getFinishActivities(scheme, project, duration, finishedActivities):
             finishedActivities.append(job)
 
 
+# Método que obtiene el valor mínimo y máximo
 def getMinMax(cl):
     costs = []
     for job in cl:
@@ -125,6 +136,7 @@ def getMinMax(cl):
     return [min(costs), max(costs)]
 
 
+# Método que obtiene la lista de restristed candidate list a través de la candidate list
 def getRestrictedCandidateList(cl, minMax, alpha):
     rcl = []
     value = minMax[0] + alpha * (minMax[1] - minMax[0])
@@ -134,6 +146,7 @@ def getRestrictedCandidateList(cl, minMax, alpha):
     return rcl
 
 
+# Método que obtiene que la lista de candidatos de forma más optimizada que la anterior
 def getRestrictedCandidateListNew(cl):
     rcl = filter(niceCost, cl)
     return rcl
@@ -147,6 +160,7 @@ def niceCost(job, minMax, alpha):
     return result
 
 
+# Método que resetea el objeto Project para comenzar una nueva solución
 def reset(project):
     for i in range(0, len(project.jobs)):
         job = project.jobs[i]
@@ -157,6 +171,7 @@ def reset(project):
     print("Reset complete")
 
 
+# Método que inserta en el diccionario de recursos
 def addEntryRecDicc(duration, project):
     nres = []
     for rec in project.resources:

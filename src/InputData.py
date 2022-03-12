@@ -42,9 +42,10 @@ def getPred(jobs):
     return predDicc
 
 
-# Lectura de los datos del fichero j1201_10.sm
+# Lectura de los datos del fichero
 def readFile(filepath, projectName):
     # Variables que vamos a utilizar
+    # Diccionario de sucesores
     succDicc = {}
 
     # Abrimos el fichero en modo lectura
@@ -77,6 +78,7 @@ def readFile(filepath, projectName):
 
     # Diccionario de predecesores
     predDicc = getPred(jobs)
+    # Diccionario de recursos en un timeStep
     resDicc = {}
     # Creación del objeto Project
     project = Project(projectName, jobs, resources, succDicc, predDicc, resDicc)

@@ -2,21 +2,30 @@ from src import GreedyRandSol
 from src.Solution import Solution
 
 
+# Método de la ejecución principal del algoritmo
 def startAlgorithm(maxIterations, project, alpha):
+    # Solución inicial que vamos a eliminar una vez creada la primera solución
     bestSol = [Solution([], 1000000), {}]
+    # Array de soluciones para los resultados
     solutions = []
+    # Bucle que crea las soluciones según el número de iteraciones
     for i in range(0, maxIterations):
+        # Creamos la solución
         sol = GreedyRandSol.constructGRS(project, alpha)
         print("Solución creada con una duración de: ", sol.duration)
         solutions.append(sol)
+        # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
+        # Comprobación de la solución creada
         if finishSol[0].duration < bestSol[0].duration:
             bestSol = finishSol
             print("Nuevo mejor tiempo", bestSol[0].duration)
-    mostrarResultados()
+    # Mostramos los resultados (todavía no sé como)
+    # mostrarResultados()
     return bestSol
 
 
+# Método Local Search para la búsqueda de una mejor solución sobre la solución creada
 def localSearch(sol, project):
     for job in sol.scheme:
         can = canExecuteBeforeNew(job, project)
@@ -27,6 +36,7 @@ def localSearch(sol, project):
     return [sol, finishSol]
 
 
+# Método para crear la solución final
 def actualizarSolucionEntera(sol, project):
     finishSol = initializeFinishSol(project.jobs[len(project.jobs) - 1].finishTime)
     for job in project.jobs:
@@ -36,13 +46,15 @@ def actualizarSolucionEntera(sol, project):
     return finishSol
 
 
+# Método que inicializa el diccionario de la solución
 def initializeFinishSol(finishTime):
     finishSol = {}
-    for i in range(0, finishTime + 1 ):
+    for i in range(0, finishTime + 1):
         finishSol[i] = []
     return finishSol
 
 
+# Método para comprobar que un job puede ejecutarse antes
 def canExecuteBeforeNew(job, project):
     can = [False, None]
     if job.njob > 0:
@@ -54,6 +66,7 @@ def canExecuteBeforeNew(job, project):
     return can
 
 
+# Método para obtener el late finish time
 def getLateFinishTime(job, project):
     lateFinishTime = 0
     preds = project.predDicc[job.njob]
@@ -65,6 +78,7 @@ def getLateFinishTime(job, project):
     return lateFinishTime
 
 
+# Método que comprueba si un job puede ejecutarse en un timeStep
 def canExecuteOnTimestep(timeStep, job, project):
     result = False
     if timeStep > 0 and timeStep != job.initTime:
@@ -74,6 +88,7 @@ def canExecuteOnTimestep(timeStep, job, project):
     return result
 
 
+# Método que comprueba si los predecesores de un job han terminado de ejecutarse
 def alreadyPredsNew(job, predDicc, timeStep):
     result = True
     predAux = predDicc[job.njob]
@@ -83,6 +98,7 @@ def alreadyPredsNew(job, predDicc, timeStep):
     return result
 
 
+# Método que comprueba si los recursos que necesita para ejecutarse están disponibles
 def recNeededNew(timeStep, job, resDicc):
     result = False
     neededRec = job.resourceType
@@ -93,6 +109,7 @@ def recNeededNew(timeStep, job, resDicc):
     return result
 
 
+# Método que actualiza los tiempos del job y el diccionario de recursos
 def actualizaTiemposyRec(job, newTime, resDicc):
     oldInitTime = job.initTime
     job.initTime = newTime
