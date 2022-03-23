@@ -28,9 +28,13 @@ def constructGRS(project, alpha):
             if sig is not None:
                 scheme.append(sig)
         executeActivities(scheme, project, duration)
-        if duration == 0 or len(finishedJobs) == 121:
+        if duration == 0:
             addEntryRecDicc(duration, project)
             getFinishActivities(scheme, project, duration, finishedJobs)
+        if len(finishedJobs) == len(project.jobs) - 1:
+            addEntryRecDicc(duration, project)
+            getFinishActivities(scheme, project, duration, finishedJobs)
+            break
         duration = duration + 1
         addEntryRecDicc(duration, project)
         getFinishActivities(scheme, project, duration, finishedJobs)
@@ -49,7 +53,7 @@ def getCandidateList(project, duration, finishedJobs, scheme):
     else:
         succFinished = getSucc(finishedJobs, project.succDicc, project.jobs, scheme)
         for job in succFinished:
-            if isFactible(job, project.resources, scheme, project.predDicc):
+            if isFactible(job, project.resources, finishedJobs, project.predDicc):
                 cl.append(job)
     return cl
 
@@ -60,22 +64,22 @@ def getSucc(finishedJobs, succDicc, jobs, scheme):
     for finishedJob in finishedJobs:
         succAux = succDicc[finishedJob.njob]
         for j in succAux:
-            if jobs[j] not in scheme:
+            if jobs[j] not in scheme and jobs[j] not in succ:
                 succ.append(jobs[j])
     return succ
 
 
 # Método que comprueba si un job se puede ejecutar
-def isFactible(job, resources, scheme, predDicc):
-    return alreadyPreds(job, scheme, predDicc) and recNeeded(job, resources)
+def isFactible(job, resources, finishedJobs, predDicc):
+    return alreadyPreds(job, finishedJobs, predDicc) and recNeeded(job, resources)
 
 
 # Método que comprueba si los predecesores de un job han terminado de ejecutarse
-def alreadyPreds(job, scheme, predDicc):
+def alreadyPreds(job, finishedJobs, predDicc):
     result = True
     predAux = predDicc[job.njob]
     for pred in predAux:
-        if not scheme.__contains__(pred):
+        if not finishedJobs.__contains__(pred):
             result = False
     return result
 

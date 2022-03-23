@@ -42,21 +42,34 @@ def getPred(jobs):
     return predDicc
 
 
+def projectType(projectName):
+    valores = []
+    if projectName.__contains__("30"):
+        valores = [18, 50, 36, 89]
+    elif projectName.__contains__("60"):
+        valores = [18, 80, 66, 149]
+    elif projectName.__contains__("90"):
+        valores = [18, 110, 96, 209]
+    elif projectName.__contains__("120"):
+        valores = [18, 140, 126, 269]
+    return valores
+
+
 # Lectura de los datos del fichero
 def readFile(filepath, projectName):
     # Variables que vamos a utilizar
     # Diccionario de sucesores
     succDicc = {}
-
+    projectype = projectType(projectName)
     # Abrimos el fichero en modo lectura
     fp = open(filepath, "r")
     lines = fp.readlines()
 
     # Obtenemos las actividades
     jobs = []
-    for i in range(18, 140):
+    for i in range(projectype[0], projectype[1]):
         line = lines[i]
-        lineAux = lines[i + 126]
+        lineAux = lines[i + projectype[2]]
         words = line.split(" ")
         wordsAux = lineAux.split(" ")
         numbers = getNumbers(words)
@@ -69,7 +82,7 @@ def readFile(filepath, projectName):
 
     # Obtención de los recursos
     resources = []
-    lineResources = lines[269]
+    lineResources = lines[projectype[3]]
     wordsRes = lineResources.split(" ")
     resourcesAux = getNumbers(wordsRes)
     for j in range(0, len(resourcesAux)):
