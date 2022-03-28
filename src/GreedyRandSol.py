@@ -5,22 +5,24 @@ from src.Solution import Solution
 
 # Método que contruye la solución
 def constructGRS(project, alpha):
+    # Reseteamos los tiempos de todos los jobs
     reset(project)
-    # Array que representa el esquema
+    # Array que representa el esquema de la solución
     scheme = []
     # Project Duration Time
     duration = 0
     # Solution:
     sol = Solution(scheme, duration)
-    # Variable que si se ha terminado el esquema
+    # Variable para la condición de parada
     finished = False
-    # Finished jobs
+    # Array que almacena los finished jobs
     finishedJobs = []
-    # Candidate List
+    # Obtención de la candidate list
     candidateList = getCandidateList(project, duration, finishedJobs, scheme)
     # Evaluate incremental cost
     evaluateIncrementalCost(candidateList, duration)
-    while not finished:
+    # Bucle para la construcción de la solución
+    while 1:
         if candidateList:
             minMax = getMinMax(candidateList)
             restrictedCL = getRestrictedCandidateList(candidateList, minMax, alpha)
@@ -38,7 +40,6 @@ def constructGRS(project, alpha):
         duration = duration + 1
         addEntryRecDicc(duration, project)
         getFinishActivities(scheme, project, duration, finishedJobs)
-        finished = len(finishedJobs) == len(project.jobs)
         candidateList = getCandidateList(project, duration, finishedJobs, scheme)
         evaluateIncrementalCost(candidateList, duration)
     sol.duration = duration

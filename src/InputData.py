@@ -56,13 +56,12 @@ def projectType(projectName):
 
 
 # Lectura de los datos del fichero
-def readFile(filepath, projectName):
+def readFile(filepath, projectName, fp):
     # Variables que vamos a utilizar
     # Diccionario de sucesores
     succDicc = {}
     projectype = projectType(projectName)
-    # Abrimos el fichero en modo lectura
-    fp = open(filepath, "r")
+
     lines = fp.readlines()
 
     # Obtenemos las actividades
@@ -80,7 +79,7 @@ def readFile(filepath, projectName):
             jobs.append(job)
             succDicc[job.njob] = job.succ
 
-    # Obtención de los recursos
+    # Obtenemos los recursos
     resources = []
     lineResources = lines[projectype[3]]
     wordsRes = lineResources.split(" ")
