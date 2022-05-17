@@ -5,22 +5,22 @@ from src.Solution import Solution
 # Método de la ejecución principal del algoritmo
 def startAlgorithm(maxIterations, project, alpha):
     # Solución inicial que vamos a eliminar una vez creada la primera solución
-    bestSol = [Solution([], 1000000), {}]
+    bestSol = [Solution([], 1000000, 0), {}]
     # Array de soluciones para los resultados
     solutions = []
     # Bucle que crea las soluciones según el número de iteraciones
     for i in range(0, maxIterations):
         # Creamos la solución
         sol = GreedyRandSol.constructGRS(project, alpha)
-        print("Solución creada con una duración de: ", sol.duration)
+        #print("Solución creada con una duración de: ", sol.makespan)
         solutions.append(sol)
         # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
         # Comprobación de la solución creada
-        if finishSol[0].duration < bestSol[0].duration:
+        if finishSol[0].makespan < bestSol[0].makespan:
             bestSol = finishSol
-            print("Nuevo mejor tiempo", bestSol[0].duration)
-    # Mostramos los resultados (todavía no sé como)
+            #print("Nuevo mejor tiempo", bestSol[0].makespan)
+    # Mostramos los resultados
     # mostrarResultados()
     return bestSol
 
@@ -32,7 +32,7 @@ def localSearch(sol, project):
         if can[0]:
             actualizaTiemposyRec(job, can[1], project.resDicc)
     finishSol = actualizarSolucionEntera(sol, project)
-    print("LocalSearch con nuevo mejor tiempo = ", sol.duration)
+    #print("LocalSearch con nuevo mejor tiempo = ", sol.makespan)
     return [sol, finishSol]
 
 
@@ -42,7 +42,7 @@ def actualizarSolucionEntera(sol, project):
     for job in project.jobs:
         arrayFinished = finishSol[job.finishTime]
         arrayFinished.append(job)
-    sol.duration = project.jobs[len(project.jobs) - 1].finishTime
+    sol.makespan = project.jobs[len(project.jobs) - 1].finishTime
     return finishSol
 
 
@@ -114,7 +114,7 @@ def actualizaTiemposyRec(job, newTime, resDicc):
     oldInitTime = job.initTime
     job.initTime = newTime
     oldFinishTime = job.finishTime
-    newFinishTime = newTime + job.duration
+    newFinishTime = newTime + job.makespan
     job.finishTime = newFinishTime
 
     neededRec = job.resourceType

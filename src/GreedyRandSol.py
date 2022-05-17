@@ -10,17 +10,19 @@ def constructGRS(project, alpha):
     # Array que representa el esquema de la solución
     scheme = []
     # Project Duration Time
+    makespan = 0
+    #Duration in ms
     duration = 0
     # Solution:
-    sol = Solution(scheme, duration)
+    sol = Solution(scheme, makespan, duration)
     # Variable para la condición de parada
     finished = False
     # Array que almacena los finished jobs
     finishedJobs = []
     # Obtención de la candidate list
-    candidateList = getCandidateList(project, duration, finishedJobs, scheme)
+    candidateList = getCandidateList(project, makespan, finishedJobs, scheme)
     # Evaluate incremental cost
-    evaluateIncrementalCost(candidateList, duration)
+    evaluateIncrementalCost(candidateList, makespan)
     # Bucle para la construcción de la solución
     while 1:
         if candidateList:
@@ -29,27 +31,27 @@ def constructGRS(project, alpha):
             sig = selectNext(restrictedCL)
             if sig is not None:
                 scheme.append(sig)
-        executeActivities(scheme, project, duration)
-        if duration == 0:
-            addEntryRecDicc(duration, project)
-            getFinishActivities(scheme, project, duration, finishedJobs)
+        executeActivities(scheme, project, makespan)
+        if makespan == 0:
+            addEntryRecDicc(makespan, project)
+            getFinishActivities(scheme, project, makespan, finishedJobs)
         if len(finishedJobs) == len(project.jobs) - 1:
-            addEntryRecDicc(duration, project)
-            getFinishActivities(scheme, project, duration, finishedJobs)
+            addEntryRecDicc(makespan, project)
+            getFinishActivities(scheme, project, makespan, finishedJobs)
             break
-        duration = duration + 1
-        addEntryRecDicc(duration, project)
-        getFinishActivities(scheme, project, duration, finishedJobs)
-        candidateList = getCandidateList(project, duration, finishedJobs, scheme)
-        evaluateIncrementalCost(candidateList, duration)
-    sol.duration = duration
+        makespan = makespan + 1
+        addEntryRecDicc(makespan, project)
+        getFinishActivities(scheme, project, makespan, finishedJobs)
+        candidateList = getCandidateList(project, makespan, finishedJobs, scheme)
+        evaluateIncrementalCost(candidateList, makespan)
+    sol.makespan = makespan
     return sol
 
 
 # Método que obtiene la lista de candidatos
-def getCandidateList(project, duration, finishedJobs, scheme):
+def getCandidateList(project, makespan, finishedJobs, scheme):
     cl = []
-    if duration == 0:
+    if makespan == 0:
         cl.append(project.jobs[0])
     else:
         succFinished = getSucc(finishedJobs, project.succDicc, project.jobs, scheme)
@@ -96,9 +98,9 @@ def recNeeded(job, resources):
 
 
 # Método que evalúa el coste incremental de ejecutar un job
-def evaluateIncrementalCost(cl, duration):
+def evaluateIncrementalCost(cl, makespan):
     for job in cl:
-        job.incrementalCost = duration + job.duration
+        job.incrementalCost = makespan + job.makespan
 
 
 # Método que selecciona el siguiente de forma aleatoria
@@ -110,21 +112,21 @@ def selectNext(factibles):
 
 
 # Método ejecuta las actividades en un timeStep
-def executeActivities(scheme, project, duration):
+def executeActivities(scheme, project, makespan):
     for job in scheme:
         if not job.finished and not job.executing:
             job.executing = True
-            job.initTime = duration
-            job.finishTime = duration + job.duration
+            job.initTime = makespan
+            job.finishTime = makespan + job.makespan
             neededRec = job.resourceType
             neededQuant = job.resourceQuant
             project.resources[neededRec - 1].quantity = project.resources[neededRec - 1].quantity - neededQuant
 
 
 # Método que obtiene las actividades que han termiando de ejecutarse
-def getFinishActivities(scheme, project, duration, finishedActivities):
+def getFinishActivities(scheme, project, makespan, finishedActivities):
     for job in scheme:
-        if duration == job.finishTime:
+        if makespan == job.finishTime:
             job.executing = False
             job.finished = True
             neededRec = job.resourceType
@@ -173,12 +175,11 @@ def reset(project):
         job.finished = False
         job.initTime = 0
         job.finishTime = 0
-    print("Reset complete")
 
 
 # Método que inserta en el diccionario de recursos
-def addEntryRecDicc(duration, project):
+def addEntryRecDicc(makespan, project):
     nres = []
     for rec in project.resources:
         nres.append(rec.quantity)
-    project.resDicc[duration] = nres
+    project.resDicc[makespan] = nres

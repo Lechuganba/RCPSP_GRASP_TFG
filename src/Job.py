@@ -6,7 +6,7 @@ class Job:
         self.succ = numbers[3:len(numbers)]
         for i in range(0, len(self.succ)):
             self.succ[i] = self.succ[i] - 1
-        self.duration = dyr[0]
+        self.makespan = dyr[0]
         self.resourceQuant = dyr[1]
         self.resourceType = dyr[2]
         self.initTime = 0

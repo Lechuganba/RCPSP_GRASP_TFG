@@ -1,64 +1,44 @@
+import argparse
+import os
+import shutil
+
 import InputData
 from src import GRASP
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(
+        description='Ejecutar directamente el problema en cuestión')
+    parser.add_argument(
+        '--problem', type=str, default="/j30.sm/j301_1.sm", help='Path al proyecto que se quiere ejecutar, desde ../resources')
+    parser.add_argument(
+        '--iterations', type=str, default="100", help='Número de iteraciones a ejecutar por el algoritmo, debe ser mayor que 0')
+    parser.add_argument(
+        '--alpha', type=str, default="0.5", help='Valor de la variable alpha, debe ser entre 0 y 1')
+    args = parser.parse_args()
+
     # Inicializamos la lectura del fichero con el método de la clase InputData
     # y creamos el proyecto
     # Tipo de problema
-    print("¿Que tipo de problema quieres utilizar? Escriba el nombre de la carpeta:")
-    while 1:
-        folder = input()
-        if folder == "j30" or folder == "j60" or folder == "j90" or folder == "j120":
-            break
-        else:
-            print("No se encuentra la carpeta, por favor, introduzca de nuevo:")
+    folder = args.problem
     # Nombre del proyecto
-    print("¿Que fichero quieres utilizar? Escriba el nombre del fichero (sin la extensión):")
-    while 1:
-        try:
-            projectName = input()
-            filepath = "../resources/" + folder + ".sm/" + projectName + ".sm"
-            fp = open(filepath, "r")
-            print("Hola")
-        except FileNotFoundError:
-            print("El fichero", projectName, ".sm no existe o no se encuentra, introduce de nuevo el nombre del proyecto")
-            continue
-        if fp:
-            break
+    filepath = "../resources" + folder
+    fp = open(filepath, "r")
     # Creación del proyecto
+    projectName = folder.split("/")[2]
+    problemType = folder.split("/")[1]
     project = InputData.readFile(filepath, projectName, fp)
-    print("Proyecto creado correctamente")
-
     # Número de iteraciones
-    print("Introduce el número de iteraciones para el algoritmo:")
-    while 1:
-        try:
-            m = input()
-            maxIterations = int(m)
-        except ValueError:
-            print(m, "no es un número entero, introduzca de nuevo:")
-            continue
-        if maxIterations > 0:
-            break
-        else:
-            print("El número debe ser mayor que 0, introduzca de nuevo")
+    maxIterations = int(args.iterations)
     # Valor de alpha
-    print("Introduce el valor de alfa para el algoritmo, debe ser un número entre 0 y 1:")
-    while 1:
-        try:
-            a = input()
-            alpha = float(a)
-        except ValueError:
-            print(alpha, "no es un número, introduzca de nuevo")
-            continue
-        if 0 < alpha < 1:
-            okay = True
-            break
-        else:
-            print("alpha no es un número valido, introduce el valor de alfa entre los valores permitdos:")
-
-    print("Comenzamos el algoritmo")
+    alpha = float(args.alpha)
     bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
     # Finalizamos y mostramos el mejor tiempo
-    print("Algoritmo terminado")
-    print("La mejor solución ha sido el esquema con tiempo = ", bestSol[0].duration)
+    projectNameAux = projectName.split(".")[0]
+    problemTypeAux = problemType.split(".")[0]
+    print("La mejor solución ha sido el esquema con tiempo = ", bestSol[0].makespan)
+    #os.makedirs("../results/j120")
+    path = "../results/" + problemTypeAux + "/" + projectNameAux + ".txt"
+    file = open(path, "w")
+    file.write("Problem: " + projectNameAux + ", Makespan: " + str(bestSol[0].makespan) + ", Duration: " + str(bestSol[0].duration))
+    file.close()
