@@ -42,25 +42,25 @@ def getPred(jobs):
     return predDicc
 
 
-def projectType(projectName):
+def projectType(projectType):
     valores = []
-    if projectName.__contains__("30"):
+    if projectType == "j30":
         valores = [18, 50, 36, 89]
-    elif projectName.__contains__("60"):
+    elif projectType == "j60":
         valores = [18, 80, 66, 149]
-    elif projectName.__contains__("90"):
+    elif projectType == "j90":
         valores = [18, 110, 96, 209]
-    elif projectName.__contains__("120"):
+    elif projectType == "j120":
         valores = [18, 140, 126, 269]
     return valores
 
 
 # Lectura de los datos del fichero
-def readFile(filepath, projectName, fp):
+def readFile(projectName, problemTypeAux,  fp):
     # Variables que vamos a utilizar
     # Diccionario de sucesores
     succDicc = {}
-    projectype = projectType(projectName)
+    projectype = projectType(problemTypeAux)
 
     lines = fp.readlines()
 

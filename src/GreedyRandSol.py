@@ -11,7 +11,7 @@ def constructGRS(project, alpha):
     scheme = []
     # Project Duration Time
     makespan = 0
-    #Duration in ms
+    # Duration in ms
     duration = 0
     # Solution:
     sol = Solution(scheme, makespan, duration)

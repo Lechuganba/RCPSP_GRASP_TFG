@@ -12,16 +12,15 @@ def startAlgorithm(maxIterations, project, alpha):
     for i in range(0, maxIterations):
         # Creamos la solución
         sol = GreedyRandSol.constructGRS(project, alpha)
-        #print("Solución creada con una duración de: ", sol.makespan)
+        # print("Solución creada con una duración de: ", sol.makespan)
         solutions.append(sol)
         # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
+        # print("Local Search con duración: ", finishSol[0].makespan)
         # Comprobación de la solución creada
         if finishSol[0].makespan < bestSol[0].makespan:
             bestSol = finishSol
             #print("Nuevo mejor tiempo", bestSol[0].makespan)
-    # Mostramos los resultados
-    # mostrarResultados()
     return bestSol
 
 

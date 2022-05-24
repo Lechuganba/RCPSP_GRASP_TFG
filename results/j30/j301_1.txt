@@ -1,1 +1,0 @@
-Problem: j301_1, Makespan: 42, Duration: 0

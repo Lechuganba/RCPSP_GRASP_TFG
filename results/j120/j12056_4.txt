@@ -1,0 +1,4 @@
+Problem: j12056_4, Iterations: 100, Alpha: 0.25, Makespan: 87, Duration: 0
+Problem: j12056_4, Iterations: 100, Alpha: 0.5, Makespan: 87, Duration: 0
+Problem: j12056_4, Iterations: 100, Alpha: 0.75, Makespan: 87, Duration: 0
+Problem: j12056_4, Iterations: 100, Alpha: 1, Makespan: 87, Duration: 0
