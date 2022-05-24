@@ -20,7 +20,7 @@ def startAlgorithm(maxIterations, project, alpha):
         # Comprobación de la solución creada
         if finishSol[0].makespan < bestSol[0].makespan:
             bestSol = finishSol
-            #print("Nuevo mejor tiempo", bestSol[0].makespan)
+            # print("Nuevo mejor tiempo", bestSol[0].makespan, "alpha: ", alpha)
     return bestSol
 
 
