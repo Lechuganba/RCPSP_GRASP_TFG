@@ -19,35 +19,32 @@ if __name__ == '__main__':
 
     # Inicializamos la lectura del fichero con el método de la clase InputData
     # y creamos el proyecto
-    dirs = ["j30", "j60", "j90", "j120"]
-    for i in dirs:
-        folder = "/" + i + ".sm/"
-        listdir = os.listdir("../resources/" + i + ".sm")
-        for j in listdir:
-            initMS = time.time()
-            # Tipo de problema
-            # Nombre del proyecto
-            filepath = "../resources" + folder + j
-            fp = open(filepath, "r")
-            # Creación del proyecto
-            projectName = j
+    # Valor de alpha
+    alphas = [0.25, 0.5, 0.75, 1]
+    for k in alphas:
+        dirs = ["j30", "j60", "j90", "j120"]
+        for i in dirs:
+            folder = "/" + i + ".sm/"
+            listdir = os.listdir("../resources/" + i + ".sm")
             problemType = folder.split("/")[1]
-            projectNameAux = projectName.split(".")[0]
             problemTypeAux = problemType.split(".")[0]
-            path = "../results/" + problemTypeAux + "/" + projectNameAux + ".csv"
+            path = "../results/totals/" + str(k) + "/" + problemTypeAux + ".csv"
             file = open(path, "w")
-            project = InputData.readFile(projectName, problemTypeAux, fp)
-            # Número de iteraciones
-            maxIterations = int(args.iterations)
-            # Valor de alpha
-            alphas = [0.25, 0.5, 0.75, 1]
-            sols = []
-            for k in alphas:
+            file.write("projectName, makespan, duration;\n")
+            for j in listdir:
+                initMS = time.time()
+                filepath = "../resources" + folder + j
+                fp = open(filepath, "r")
+                # Creación del proyecto
+                projectName = j
+                projectNameAux = projectName.split(".")[0]
+                project = InputData.readFile(projectName, problemTypeAux, fp)
+                # Número de iteraciones
+                maxIterations = int(args.iterations)
                 initMS = time.time()
                 bestSol = GRASP.startAlgorithm(maxIterations, project, k)
                 # Finalizamos y mostramos el mejor tiempo
                 finishMS = time.time()
                 bestSol[0].duration = finishMS - initMS
-                sols.append(bestSol[0].makespan)
-                file.write(str(k) + "," + str(bestSol[0].makespan) + "," + str(bestSol[0].duration) + ";\n")
+                file.write(projectNameAux + "," + str(bestSol[0].makespan) + "," + str(bestSol[0].duration) + ";\n")
             file.close()
