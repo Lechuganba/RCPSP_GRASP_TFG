@@ -4,6 +4,7 @@ import time
 
 import InputData
 from src import GRASP
+import Results
 
 if __name__ == '__main__':
 
@@ -12,7 +13,8 @@ if __name__ == '__main__':
     parser.add_argument(
         '--problem', type=str, default="/j120.sm/", help='Path al proyecto que se quiere ejecutar, desde ../resources')
     parser.add_argument(
-        '--iterations', type=str, default="25", help='Número de iteraciones a ejecutar por el algoritmo, debe ser mayor que 0')
+        '--iterations', type=str, default="25",
+        help='Número de iteraciones a ejecutar por el algoritmo, debe ser mayor que 0')
     parser.add_argument(
         '--alpha', type=str, default="0.5", help='Valor de la variable alpha, debe ser entre 0 y 1')
     args = parser.parse_args()
@@ -20,6 +22,9 @@ if __name__ == '__main__':
     # Inicializamos la lectura del fichero con el método de la clase InputData
     # y creamos el proyecto
     # Valor de alpha
+
+    Results.panditas()
+
     alphas = [0.25, 0.5, 0.75, 1]
     for k in alphas:
         dirs = ["j30", "j60", "j90", "j120"]

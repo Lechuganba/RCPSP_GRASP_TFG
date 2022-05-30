@@ -2,6 +2,7 @@ import matplotlib as mat
 import numpy as np
 import pandas as pd
 
+
 def diagram():
     return 0
 
@@ -9,6 +10,7 @@ def diagram():
 def mediayvarianza():
     return 0
 
+
 def panditas():
-    a = pd.read_csv("../results/j30/j301_4.csv")
+    a = pd.read_csv("../results/totals/0.5/j30.csv")
     print("hola")

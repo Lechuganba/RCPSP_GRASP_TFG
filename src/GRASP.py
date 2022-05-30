@@ -12,15 +12,12 @@ def startAlgorithm(maxIterations, project, alpha):
     for i in range(0, maxIterations):
         # Creamos la solución
         sol = GreedyRandSol.constructGRS(project, alpha)
-        # print("Solución creada con una duración de: ", sol.makespan)
         solutions.append(sol)
         # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
-        # print("Local Search con duración: ", finishSol[0].makespan)
         # Comprobación de la solución creada
         if finishSol[0].makespan < bestSol[0].makespan:
             bestSol = finishSol
-            # print("Nuevo mejor tiempo", bestSol[0].makespan, "alpha: ", alpha)
     return bestSol
 
 
@@ -31,7 +28,6 @@ def localSearch(sol, project):
         if can[0]:
             actualizaTiemposyRec(job, can[1], project.resDicc)
     finishSol = actualizarSolucionEntera(sol, project)
-    #print("LocalSearch con nuevo mejor tiempo = ", sol.makespan)
     return [sol, finishSol]
 
 
@@ -126,8 +122,3 @@ def actualizaTiemposyRec(job, newTime, resDicc):
     for timeStep in range(newTime + 1, newFinishTime + 1):
         resTimestep = resDicc[timeStep]
         resTimestep[neededRec - 1] = resTimestep[neededRec - 1] - neededQuant
-
-
-def mostrarResultados():
-    resultados = None
-    # return resultados
