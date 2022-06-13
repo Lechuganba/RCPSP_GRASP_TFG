@@ -27,7 +27,7 @@ def localSearch(sol, project):
         can = canExecuteBeforeNew(job, project)
         if can[0]:
             actualizaTiemposyRec(job, can[1], project.resDicc)
-    finishSol = actualizarSolucionEntera(sol, project)
+    finishSol = actualizarSolucionEntera(sol, 2)
     return [sol, finishSol]
 
 
