@@ -26,14 +26,14 @@ def localSearch(sol, project):
     for job in sol.scheme:
         can = canExecuteBeforeNew(job, project)
         if can[0]:
-            actualizaTiemposyRec(job, can[1], project.resDicc)
-    finishSol = actualizarSolucionEntera(sol, 2)
+            actualizeTimesAndRec(job, can[1], project.resDicc)
+    finishSol = actualizeFullSolution(sol, 2)
     return [sol, finishSol]
 
 
 # Método para crear la solución final
-def actualizarSolucionEntera(sol, project):
-    finishSol = initializeFinishSol(project.jobs[len(project.jobs) - 1].finishTime)
+def actualizeFullSolution(sol, project):
+    finishSol = initialiceFinishSol(project.jobs[len(project.jobs) - 1].finishTime)
     for job in project.jobs:
         arrayFinished = finishSol[job.finishTime]
         arrayFinished.append(job)
@@ -42,7 +42,7 @@ def actualizarSolucionEntera(sol, project):
 
 
 # Método que inicializa el diccionario de la solución
-def initializeFinishSol(finishTime):
+def initialiceFinishSol(finishTime):
     finishSol = {}
     for i in range(0, finishTime + 1):
         finishSol[i] = []
@@ -105,7 +105,7 @@ def recNeededNew(timeStep, job, resDicc):
 
 
 # Método que actualiza los tiempos del job y el diccionario de recursos
-def actualizaTiemposyRec(job, newTime, resDicc):
+def actualizeTimesAndRec(job, newTime, resDicc):
     oldInitTime = job.initTime
     job.initTime = newTime
     oldFinishTime = job.finishTime
