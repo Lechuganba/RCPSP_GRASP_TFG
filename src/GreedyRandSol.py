@@ -90,10 +90,17 @@ def alreadyPreds(job, finishedJobs, predDicc):
 # Método que comprueba si los recursos que necesita para ejecutarse están disponibles
 def recNeeded(job, resources):
     result = False
-    neededRec = job.resourceType
     neededQuant = job.resourceQuant
-    if resources[neededRec - 1].quantity >= neededQuant:
+    if compareRecs(resources, neededQuant):
         result = True
+    return result
+
+
+def compareRecs(resources, neededQuant):
+    result = True
+    for i in range(0, len(resources)):
+        if resources[i].quantity < neededQuant[i]:
+            result = False
     return result
 
 
@@ -118,20 +125,28 @@ def executeActivities(scheme, project, makespan):
             job.executing = True
             job.initTime = makespan
             job.finishTime = makespan + job.makespan
-            neededRec = job.resourceType
             neededQuant = job.resourceQuant
-            project.resources[neededRec - 1].quantity = project.resources[neededRec - 1].quantity - neededQuant
+            minusRecs(project, neededQuant)
+
+
+def minusRecs(project, neededQuant):
+    for i in range(0, len(project.resources)):
+        project.resources[i].quantity = project.resources[i].quantity - neededQuant[i]
+
+
+def plusRecs(project, neededQuant):
+    for i in range(0, len(project.resources)):
+        project.resources[i].quantity = project.resources[i].quantity + neededQuant[i]
 
 
 # Método que obtiene las actividades que han termiando de ejecutarse
 def getFinishActivities(scheme, project, makespan, finishedActivities):
     for job in scheme:
-        if makespan == job.finishTime:
+        if makespan == job.finishTime and not job.finished:
             job.executing = False
             job.finished = True
-            neededRec = job.resourceType
             neededQuant = job.resourceQuant
-            project.resources[neededRec - 1].quantity = project.resources[neededRec - 1].quantity + neededQuant
+            plusRecs(project, neededQuant)
             finishedActivities.append(job)
 
 

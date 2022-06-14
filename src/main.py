@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # y creamos el proyecto
     # Valor de alpha
 
-    Results.panditas()
+    #Results.panditas()
 
     alphas = [0.25, 0.5, 0.75, 1]
     for k in alphas:

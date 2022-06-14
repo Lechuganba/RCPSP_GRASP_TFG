@@ -13,4 +13,3 @@ def mediayvarianza():
 
 def panditas():
     a = pd.read_csv("../results/totals/0.5/j30.csv")
-    print("hola")

@@ -27,7 +27,7 @@ def localSearch(sol, project):
         can = canExecuteBeforeNew(job, project)
         if can[0]:
             actualizeTimesAndRec(job, can[1], project.resDicc)
-    finishSol = actualizeFullSolution(sol, 2)
+    finishSol = actualizeFullSolution(sol, project)
     return [sol, finishSol]
 
 
@@ -96,11 +96,18 @@ def alreadyPredsNew(job, predDicc, timeStep):
 # Método que comprueba si los recursos que necesita para ejecutarse están disponibles
 def recNeededNew(timeStep, job, resDicc):
     result = False
-    neededRec = job.resourceType
     neededQuant = job.resourceQuant
     resTimestep = resDicc[timeStep]
-    if resTimestep[neededRec - 1] >= neededQuant:
+    if compareRecsNew(resTimestep, neededQuant):
         result = True
+    return result
+
+
+def compareRecsNew(resTimestep, neededQuant):
+    result = True
+    for i in range(0, len(resTimestep)):
+        if resTimestep[i] < neededQuant[i]:
+            result = False
     return result
 
 
@@ -112,13 +119,24 @@ def actualizeTimesAndRec(job, newTime, resDicc):
     newFinishTime = newTime + job.makespan
     job.finishTime = newFinishTime
 
-    neededRec = job.resourceType
     neededQuant = job.resourceQuant
+    plusRecsNew(oldInitTime, oldFinishTime, resDicc, neededQuant)
+    minusRecsNew(newTime, newFinishTime, resDicc, neededQuant)
 
+
+def plusRecsNew(oldInitTime, oldFinishTime, resDicc, neededQuant):
     for timeStep in range(oldInitTime + 1, oldFinishTime + 1):
         resTimestep = resDicc[timeStep]
-        resTimestep[neededRec - 1] = resTimestep[neededRec - 1] + neededQuant
+        for i in range(0, len(resTimestep)):
+            resTimestep[i] = resTimestep[i] + neededQuant[i]
 
+
+def minusRecsNew(newTime, newFinishTime, resDicc, neededQuant):
     for timeStep in range(newTime + 1, newFinishTime + 1):
         resTimestep = resDicc[timeStep]
-        resTimestep[neededRec - 1] = resTimestep[neededRec - 1] - neededQuant
+        for i in range(0, len(resTimestep)):
+            resTimestep[i] = resTimestep[i] - neededQuant[i]
+
+
+
+

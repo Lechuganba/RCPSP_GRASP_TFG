@@ -20,13 +20,10 @@ def getNumbers(a):
 # Método para obtener la duración, el tipo de recurso
 # y la cantidad de recusoss de la línea que leemos
 def getDyr(numbersAux):
-    tupla = [0, 0, 0]
-    tupla[0] = numbersAux[2]
-    for i in range(3, len(numbersAux)):
-        if numbersAux[i] != 0:
-            tupla[1] = numbersAux[i]
-            tupla[2] = i - 2
-    return tupla
+    resNeed = [0, 0, 0, 0]
+    makespan = numbersAux[2]
+    resNeed = numbersAux[3:len(numbersAux)]
+    return [makespan, resNeed]
 
 
 # Creación del diccionario de predecesores

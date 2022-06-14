@@ -8,7 +8,6 @@ class Job:
             self.succ[i] = self.succ[i] - 1
         self.makespan = dyr[0]
         self.resourceQuant = dyr[1]
-        self.resourceType = dyr[2]
         self.initTime = 0
         self.finishTime = 0
         self.finished = False
