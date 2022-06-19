@@ -14,7 +14,7 @@ def constructGRS(project, alpha):
     # Duration in ms
     duration = 0
     # Solution:
-    sol = Solution(scheme, makespan, duration)
+    sol = Solution(scheme, makespan, duration, {})
     # Variable para la condición de parada
     finished = False
     # Array que almacena los finished jobs

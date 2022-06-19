@@ -5,18 +5,15 @@ from src.Solution import Solution
 # Método de la ejecución principal del algoritmo
 def startAlgorithm(maxIterations, project, alpha):
     # Solución inicial que vamos a eliminar una vez creada la primera solución
-    bestSol = [Solution([], 1000000, 0), {}]
-    # Array de soluciones para los resultados
-    solutions = []
+    bestSol = Solution([], 1000000, 0, {})
     # Bucle que crea las soluciones según el número de iteraciones
     for i in range(0, maxIterations):
         # Creamos la solución
         sol = GreedyRandSol.constructGRS(project, alpha)
-        solutions.append(sol)
         # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
         # Comprobación de la solución creada
-        if finishSol[0].makespan < bestSol[0].makespan:
+        if finishSol.makespan < bestSol.makespan:
             bestSol = finishSol
     return bestSol
 
@@ -28,7 +25,8 @@ def localSearch(sol, project):
         if can[0]:
             actualizeTimesAndRec(job, can[1], project.resDicc)
     finishSol = actualizeFullSolution(sol, project)
-    return [sol, finishSol]
+    sol.diccScheme = finishSol
+    return sol
 
 
 # Método para crear la solución final

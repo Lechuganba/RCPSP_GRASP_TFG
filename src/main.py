@@ -1,5 +1,6 @@
 import argparse
 import os
+import random
 import time
 
 import InputData
@@ -21,35 +22,31 @@ if __name__ == '__main__':
 
     # Inicializamos la lectura del fichero con el método de la clase InputData
     # y creamos el proyecto
-    # Valor de alpha
+    dirs = ["j30", "j60", "j90", "j120"]
+    for dir in dirs:
+        alpha = round(random.random(), 2)
+        folder = "/" + dir + ".sm/"
+        listdir = os.listdir("../resources/" + dir + ".sm")
+        instances = random.sample(listdir, 50)
+        path = "../results/" + dir + ".csv"
+        file = open(path, "w")
+        file.write("projectName, alpha, makespan, duration;\n")
+        for j in instances:
+            filepath = "../resources" + folder + j
+            fp = open(filepath, "r")
+            # Creación del proyecto
+            projectName = j
+            projectNameAux = projectName.split(".")[0]
+            project = InputData.readFile(projectName, dir, fp)
+            # Número de iteraciones
+            maxIterations = int(args.iterations)
+            initMS = time.time()
+            bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
+            # Finalizamos y mostramos el mejor tiempo
+            finishMS = time.time()
+            bestSol.duration = finishMS - initMS
+            file.write(projectNameAux + "," + str(alpha) + "," + str(bestSol.makespan) + "," + str(bestSol.duration) + ";\n")
+        file.close()
 
-    #Results.panditas()
+    Results.processResults()
 
-    alphas = [0.25, 0.5, 0.75, 1]
-    for k in alphas:
-        dirs = ["j30", "j60", "j90", "j120"]
-        for i in dirs:
-            folder = "/" + i + ".sm/"
-            listdir = os.listdir("../resources/" + i + ".sm")
-            problemType = folder.split("/")[1]
-            problemTypeAux = problemType.split(".")[0]
-            path = "../results/totals/" + str(k) + "/" + problemTypeAux + ".csv"
-            file = open(path, "w")
-            file.write("projectName, makespan, duration;\n")
-            for j in listdir:
-                initMS = time.time()
-                filepath = "../resources" + folder + j
-                fp = open(filepath, "r")
-                # Creación del proyecto
-                projectName = j
-                projectNameAux = projectName.split(".")[0]
-                project = InputData.readFile(projectName, problemTypeAux, fp)
-                # Número de iteraciones
-                maxIterations = int(args.iterations)
-                initMS = time.time()
-                bestSol = GRASP.startAlgorithm(maxIterations, project, k)
-                # Finalizamos y mostramos el mejor tiempo
-                finishMS = time.time()
-                bestSol[0].duration = finishMS - initMS
-                file.write(projectNameAux + "," + str(bestSol[0].makespan) + "," + str(bestSol[0].duration) + ";\n")
-            file.close()
