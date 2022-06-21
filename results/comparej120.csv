@@ -1,1 +1,5 @@
-problemType, GRASP, OPT/HEUR, DRAW
+problemType, alpha, GRASP, OPT/HEUR, DRAW
+j120, 0.34, 19, 31, 0
+j120, 0.37, 19, 31, 0
+j120, 0.17, 19, 31, 0
+j120, 0.03, 17, 32, 1

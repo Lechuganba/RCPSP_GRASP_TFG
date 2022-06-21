@@ -1,2 +1,5 @@
-problemType, GRASP, OPT/HEUR, DRAW
-j30, 18, 29, 29
+problemType, alpha, GRASP, OPT/HEUR, DRAW
+j30, 0.81, 13, 30, 7
+j30, 0.58, 14, 30, 6
+j30, 0.48, 14, 31, 5
+j30, 0.45, 14, 31, 5
