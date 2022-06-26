@@ -30,7 +30,7 @@ if __name__ == '__main__':
             alphas.append(alphaAux)
         folder = "/" + dir + ".sm/"
         listdir = os.listdir("../resources/" + dir + ".sm")
-        instances = random.sample(listdir, 507)
+        instances = random.sample(listdir, 50)
         path = "../results/" + dir + ".csv"
         file = open(path, "w")
         file.write("projectName, alpha, makespan, duration;\n")
