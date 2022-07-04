@@ -1,25 +1,66 @@
 import pandas as pd
 
+from src import Const
 
-def processResults(alphas, dir):
-    if dir == "j30":
+
+def alphaRND(dir):
+    if dir == Const.J30:
         j30 = pd.read_csv("../results/j30.csv")
-        compareOpt("j30", j30, alphas)
-    elif dir == "j60":
+        compareRND(Const.J30, j30)
+    elif dir == Const.J60:
         j60 = pd.read_csv("../results/j60.csv")
-        compareOpt("j60", j60, alphas)
-    elif dir == "j90":
+        compareRND(Const.J60, j60)
+    elif dir == Const.J90:
         j90 = pd.read_csv("../results/j90.csv")
-        compareOpt("j90", j90, alphas)
-    elif dir == "j120":
+        compareRND(Const.J90, j90)
+    elif dir == Const.J120:
         j120 = pd.read_csv("../results/j120.csv")
-        compareOpt("j120", j120, alphas)
+        compareRND(Const.J120, j120)
 
 
-def compareOpt(problemType, panda, alphas):
-    outputPath = "../results/compare" + problemType + ".csv"
+def compareRND(problemType, panda):
+    outputPath = "../results/compareRND" + problemType + ".csv"
     outputFile = open(outputPath, "w")
-    if problemType == "j30":
+    outputFile.write("alpha,count\n")
+    i = 0
+    cont = 0
+    contRnd = 0
+    draw = 0
+    while i < len(panda.values):
+        res = panda.values[i]
+        rnd = panda.values[i+1]
+        if res[2] == rnd[2]:
+            draw = draw + 1
+        elif res[2] < rnd[2]:
+            cont = cont + 1
+        else:
+            contRnd = contRnd + 1
+        i = i + 2
+    outputFile.write("0.25, " + str(cont) + "\n")
+    outputFile.write("RND, " + str(contRnd) + "\n")
+    outputFile.write("DRAW, " + str(draw) + "\n")
+    outputFile.close()
+
+
+def processResults(dir):
+    if dir == Const.J30:
+        j30 = pd.read_csv("../results/j30.csv")
+        compareOpt(Const.J30, j30)
+    elif dir == Const.J60:
+        j60 = pd.read_csv("../results/j60.csv")
+        compareOpt(Const.J60, j60)
+    elif dir == Const.J90:
+        j90 = pd.read_csv("../results/j90.csv")
+        compareOpt(Const.J90, j90)
+    elif dir == Const.J120:
+        j120 = pd.read_csv("../results/j120.csv")
+        compareOpt(Const.J120, j120)
+
+
+def compareOpt(problemType, panda):
+    outputPath = "../results/compareOPT" + problemType + ".csv"
+    outputFile = open(outputPath, "w")
+    if problemType == Const.J30:
         inputPath = "../resources/opthrs/" + problemType + "opt.sm"
         start = [22, " "]
     else:
@@ -27,25 +68,16 @@ def compareOpt(problemType, panda, alphas):
         start = [5, "\t"]
     inputFile = open(inputPath, "r")
     lines = inputFile.readlines()
-    outputFile.write("problemType, alpha, GRASP, OPT/HEUR, DRAW\n")
-    for alpha in alphas:
-        draw = 0
-        worse = 0
-        better = 0
-        for result in panda.values:
-            if alpha == result[1]:
-                name = result[0]
-                opts = findLines(lines, name, start, problemType, alpha)
-                if opts[2] == result[2]:
-                    draw = draw + 1
-                elif opts[2] > result[2]:
-                    better = better + 1
-                else:
-                    worse = worse + 1
-        outputFile.write(problemType + ", " + str(alpha) + ", " + str(better) + ", " + str(worse) + ", " + str(draw) + "\n")
+    outputFile.write("problemType, makespan, GRASP, diff\n")
+    for result in panda.values:
+        name = result[0]
+        opts = findLines(lines, name, start, problemType)
+        if result[1] == "0.25" and opts is not None:
+            diff = result[2] - opts[2]
+            outputFile.write(str(name ) + ", " + str(opts[2]) + ", " + str(result[2]) + ", " + str(diff) + "\n")
 
 
-def findLines(lines, name, start, problemType, alpha):
+def findLines(lines, name, start, problemType):
     nameAux = name.split("_")
     i = nameAux[0][3:len(nameAux[0])]
     j = nameAux[1]
@@ -61,7 +93,7 @@ def findLines(lines, name, start, problemType, alpha):
 def getNumbersAux(a, problemType):
     numbers = []
     for i in range(0, len(a)):
-        if problemType != "j30" and i == 3:
+        if problemType != Const.J30 and i == 3:
             break
         if a[i] != "":
             if a[i].__contains__("\n"):

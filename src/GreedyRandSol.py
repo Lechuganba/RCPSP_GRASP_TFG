@@ -15,10 +15,10 @@ def constructGRS(project, alpha):
     duration = 0
     # Solution:
     sol = Solution(scheme, makespan, duration, {})
-    # Variable para la condición de parada
-    finished = False
     # Array que almacena los finished jobs
     finishedJobs = []
+    # Array que almacena los jobs que se estan ejecutando
+    executingJobs = []
     # Obtención de la candidate list
     candidateList = getCandidateList(project, makespan, finishedJobs, scheme)
     # Evaluate incremental cost
@@ -31,17 +31,18 @@ def constructGRS(project, alpha):
             sig = selectNext(restrictedCL)
             if sig is not None:
                 scheme.append(sig)
-        executeActivities(scheme, project, makespan)
+                executeActivitie(makespan, project, sig, executingJobs)
         if makespan == 0:
-            addEntryRecDicc(makespan, project)
-            getFinishActivities(scheme, project, makespan, finishedJobs)
+            # addEntryRecDicc(makespan, project)
+            getFinishedActivities(executingJobs, project, makespan, finishedJobs)
         if len(finishedJobs) == len(project.jobs) - 1:
             addEntryRecDicc(makespan, project)
-            getFinishActivities(scheme, project, makespan, finishedJobs)
+            getFinishedActivities(executingJobs, project, makespan, finishedJobs)
             break
-        makespan = makespan + 1
         addEntryRecDicc(makespan, project)
-        getFinishActivities(scheme, project, makespan, finishedJobs)
+        makespan = makespan + 1
+        getFinishedActivities(executingJobs, project, makespan, finishedJobs)
+        executingJobs = removeExecuted(executingJobs)
         candidateList = getCandidateList(project, makespan, finishedJobs, scheme)
         evaluateIncrementalCost(candidateList, makespan)
     sol.makespan = makespan
@@ -119,14 +120,13 @@ def selectNext(factibles):
 
 
 # Método ejecuta las actividades en un timeStep
-def executeActivities(scheme, project, makespan):
-    for job in scheme:
-        if not job.finished and not job.executing:
-            job.executing = True
-            job.initTime = makespan
-            job.finishTime = makespan + job.makespan
-            neededQuant = job.resourceQuant
-            minusRecs(project, neededQuant)
+def executeActivitie(makespan, project, job, executingJobs):
+    job.executing = True
+    job.initTime = makespan
+    job.finishTime = makespan + job.makespan
+    neededQuant = job.resourceQuant
+    minusRecs(project, neededQuant)
+    executingJobs.append(job)
 
 
 def minusRecs(project, neededQuant):
@@ -140,14 +140,27 @@ def plusRecs(project, neededQuant):
 
 
 # Método que obtiene las actividades que han termiando de ejecutarse
-def getFinishActivities(scheme, project, makespan, finishedActivities):
-    for job in scheme:
+def getFinishedActivities(executingJobs, project, makespan, finishedActivities):
+    for job in executingJobs:
         if makespan == job.finishTime and not job.finished:
             job.executing = False
             job.finished = True
             neededQuant = job.resourceQuant
             plusRecs(project, neededQuant)
             finishedActivities.append(job)
+
+
+def removeExecuted(executingJobs):
+    aux = []
+    i = 0
+    for job in executingJobs:
+        aux.append(job)
+    while i <= len(aux):
+        job = aux.pop(0)
+        if not job.finished:
+            aux.append(job)
+        i = i + 1
+    return aux
 
 
 # Método que obtiene el valor mínimo y máximo
@@ -165,12 +178,6 @@ def getRestrictedCandidateList(cl, minMax, alpha):
     for job in cl:
         if job.incrementalCost <= value:
             rcl.append(job)
-    return rcl
-
-
-# Método que obtiene que la lista de candidatos de forma más optimizada que la anterior
-def getRestrictedCandidateListNew(cl):
-    rcl = filter(niceCost, cl)
     return rcl
 
 

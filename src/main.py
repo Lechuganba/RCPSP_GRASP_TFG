@@ -4,7 +4,7 @@ import random
 import time
 
 import InputData
-from src import GRASP
+from src import GRASP, Const
 import Results
 
 if __name__ == '__main__':
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--problem', type=str, default="/j120.sm/", help='Path al proyecto que se quiere ejecutar, desde ../resources')
     parser.add_argument(
-        '--iterations', type=str, default="50",
+        '--iterations', type=str, default="100",
         help='Número de iteraciones a ejecutar por el algoritmo, debe ser mayor que 0')
     parser.add_argument(
         '--alpha', type=str, default="0.5", help='Valor de la variable alpha, debe ser entre 0 y 1')
@@ -22,20 +22,17 @@ if __name__ == '__main__':
 
     # Inicializamos la lectura del fichero con el método de la clase InputData
     # y creamos el proyecto
-    dirs = ["j30", "j60", "j90", "j120"]
+    #dirs = [Const.J30, Const.J60, Const.J90, Const.J120]
+    dirs = [Const.J120]
     for dir in dirs:
-        alphas = []
-        for i in range(0, 4):
-            alphaAux = round(random.random(), 2)
-            alphas.append(alphaAux)
         folder = "/" + dir + ".sm/"
         listdir = os.listdir("../resources/" + dir + ".sm")
-        instances = random.sample(listdir, 50)
         path = "../results/" + dir + ".csv"
         file = open(path, "w")
         file.write("projectName, alpha, makespan, duration;\n")
-        for alpha in alphas:
-            for j in instances:
+        for j in listdir:
+            alphas = [0.25, round(random.random(), 2)]
+            for alpha in alphas:
                 filepath = "../resources" + folder + j
                 fp = open(filepath, "r")
                 # Creación del proyecto
@@ -48,8 +45,11 @@ if __name__ == '__main__':
                 bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
                 # Finalizamos y mostramos el mejor tiempo
                 finishMS = time.time()
-                bestSol.duration = finishMS - initMS
+                bestSol.duration = round(finishMS - initMS, 2)
+                if alpha != 0.25:
+                    alpha = "RND"
                 file.write(projectNameAux + "," + str(alpha) + "," + str(bestSol.makespan) + "," + str(bestSol.duration) + ";\n")
         file.close()
-        Results.processResults(alphas, dir)
+        Results.alphaRND(dir)
+        Results.processResults(dir)
 

@@ -1,3 +1,5 @@
+import random
+
 from src import GreedyRandSol
 from src.Solution import Solution
 
@@ -123,14 +125,14 @@ def actualizeTimesAndRec(job, newTime, resDicc):
 
 
 def plusRecsNew(oldInitTime, oldFinishTime, resDicc, neededQuant):
-    for timeStep in range(oldInitTime + 1, oldFinishTime + 1):
+    for timeStep in range(oldInitTime, oldFinishTime):
         resTimestep = resDicc[timeStep]
         for i in range(0, len(resTimestep)):
             resTimestep[i] = resTimestep[i] + neededQuant[i]
 
 
 def minusRecsNew(newTime, newFinishTime, resDicc, neededQuant):
-    for timeStep in range(newTime + 1, newFinishTime + 1):
+    for timeStep in range(newTime, newFinishTime):
         resTimestep = resDicc[timeStep]
         for i in range(0, len(resTimestep)):
             resTimestep[i] = resTimestep[i] - neededQuant[i]
