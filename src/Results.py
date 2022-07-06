@@ -3,6 +3,64 @@ import pandas as pd
 from src import Const
 
 
+def milisecs():
+    inputPath = "../resources/opthrs/j30opt.sm"
+    start = [22, " "]
+    inputFile = open(inputPath, "r")
+    lines = inputFile.readlines()
+    media = 0
+    total = (len(lines) -1 )- start[0]
+    for k in range(start[0], len(lines) -1):
+        line = lines[k]
+        lineAux = line.split(start[1])
+        numbers = getNumbersAux(lineAux, "j30")
+        media = media + float(numbers[3])
+    print("Media " + str(media/total))
+
+
+def mediaMakespan():
+    j30 = pd.read_csv("../results/compareOPTj30.csv")
+    j60 = pd.read_csv("../results/compareOPTj60.csv")
+    j90 = pd.read_csv("../results/compareOPTj90.csv")
+    j120 = pd.read_csv("../results/compareOPTj120.csv")
+    res = [j30, j60, j90, j120]
+    for r in res:
+        i = 0
+        total = len(r.values)
+        media = 0
+        mediaOPT = 0
+        dif = 0
+        while i < total:
+            res = r.values[i]
+            media = media + res[2]
+            mediaOPT = mediaOPT + res[1]
+            dif = dif + res[3]
+            i = i + 1
+        print("Media: " + str(media/total))
+        print("MediaOPT: " + str(mediaOPT/total))
+        print("Dif: " + str(dif / total))
+
+def mediaRND():
+    j30 = pd.read_csv("../results/j30.csv")
+    j60 = pd.read_csv("../results/j60.csv")
+    j90 = pd.read_csv("../results/j90.csv")
+    j120 = pd.read_csv("../results/j120.csv")
+    res = [j30, j60, j90, j120]
+    for r in res:
+        i = 0
+        total = len(r.values)
+        media = 0
+        mediaRND = 0
+        while i < total:
+            res = r.values[i]
+            rnd = r.values[i+1]
+            media = media + float(res[3].replace(";", ""))
+            mediaRND = mediaRND + float(rnd[3].replace(";", ""))
+            i = i + 2
+        print("Media: " + str(media/(total/2)))
+        print("MediaRND: " + str(mediaRND/(total/2)))
+
+
 def alphaRND(dir):
     if dir == Const.J30:
         j30 = pd.read_csv("../results/j30.csv")

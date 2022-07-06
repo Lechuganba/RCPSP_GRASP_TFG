@@ -8,7 +8,6 @@ from src import GRASP, Const
 import Results
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser(
         description='Ejecutar directamente el problema en cuestión')
     parser.add_argument(
@@ -20,8 +19,8 @@ if __name__ == '__main__':
         '--alpha', type=str, default="0.5", help='Valor de la variable alpha, debe ser entre 0 y 1')
     args = parser.parse_args()
 
-    # Inicializamos la lectura del fichero con el método de la clase InputData
-    # y creamos el proyecto
+    #Inicializamos la lectura del fichero con el método de la clase InputData
+    #y creamos el proyecto
     #dirs = [Const.J30, Const.J60, Const.J90, Const.J120]
     dirs = [Const.J120]
     for dir in dirs:
@@ -29,27 +28,29 @@ if __name__ == '__main__':
         listdir = os.listdir("../resources/" + dir + ".sm")
         path = "../results/" + dir + ".csv"
         file = open(path, "w")
+        instances = random.sample(listdir, 50)
         file.write("projectName, alpha, makespan, duration;\n")
-        for j in listdir:
-            alphas = [0.25, round(random.random(), 2)]
-            for alpha in alphas:
-                filepath = "../resources" + folder + j
-                fp = open(filepath, "r")
-                # Creación del proyecto
-                projectName = j
-                projectNameAux = projectName.split(".")[0]
-                project = InputData.readFile(projectName, dir, fp)
-                # Número de iteraciones
-                maxIterations = int(args.iterations)
-                initMS = time.time()
-                bestSol = GRASP.startAlgorithm(maxIterations, project, alpha)
-                # Finalizamos y mostramos el mejor tiempo
-                finishMS = time.time()
-                bestSol.duration = round(finishMS - initMS, 2)
-                if alpha != 0.25:
-                    alpha = "RND"
-                file.write(projectNameAux + "," + str(alpha) + "," + str(bestSol.makespan) + "," + str(bestSol.duration) + ";\n")
+        alphas = [0.25, 0.5, 0.75, 1]
+        for j in instances:
+            maxIterations = [100, 200]
+            for it in maxIterations:
+                for alpha in alphas:
+                    filepath = "../resources" + folder + j
+                    fp = open(filepath, "r")
+                    # Creación del proyecto
+                    projectName = j
+                    projectNameAux = projectName.split(".")[0]
+                    project = InputData.readFile(projectName, dir, fp)
+                    # Número de iteraciones
+                    initMS = time.time()
+                    bestSol = GRASP.startAlgorithm(it, project, alpha)
+                    # Finalizamos y mostramos el mejor tiempo
+                    finishMS = time.time()
+                    bestSol.duration = round(finishMS - initMS, 2)
+                    if alpha != 0.25 and alpha != 0.5 and alpha != 0.75:
+                        alpha = "RND"
+                    file.write(projectNameAux + "," + str(it) + "," + str(alpha) + "," + str(bestSol.makespan) + "," + str(bestSol.duration) + "\n")
         file.close()
-        Results.alphaRND(dir)
-        Results.processResults(dir)
+        #Results.alphaRND(dir)
+        #Results.processResults(dir)
 

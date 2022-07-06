@@ -11,7 +11,11 @@ def startAlgorithm(maxIterations, project, alpha):
     # Bucle que crea las soluciones según el número de iteraciones
     for i in range(0, maxIterations):
         # Creamos la solución
-        sol = GreedyRandSol.constructGRS(project, alpha)
+        if alpha == 1:
+            alphaAux = round(random.random(), 2)
+            sol = GreedyRandSol.constructGRS(project, alphaAux)
+        else:
+            sol = GreedyRandSol.constructGRS(project, alpha)
         # Ejecutamos el LocalSearch
         finishSol = localSearch(sol, project)
         # Comprobación de la solución creada
