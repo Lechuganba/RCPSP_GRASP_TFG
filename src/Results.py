@@ -9,36 +9,42 @@ def milisecs():
     inputFile = open(inputPath, "r")
     lines = inputFile.readlines()
     media = 0
-    total = (len(lines) -1 )- start[0]
-    for k in range(start[0], len(lines) -1):
+    total = (len(lines) - 1) - start[0]
+    for k in range(start[0], len(lines) - 1):
         line = lines[k]
         lineAux = line.split(start[1])
         numbers = getNumbersAux(lineAux, "j30")
         media = media + float(numbers[3])
-    print("Media " + str(media/total))
+    print("Media " + str(media / total))
 
 
 def mediaMakespan():
-    j30 = pd.read_csv("../results/compareOPTj30.csv")
-    j60 = pd.read_csv("../results/compareOPTj60.csv")
-    j90 = pd.read_csv("../results/compareOPTj90.csv")
-    j120 = pd.read_csv("../results/compareOPTj120.csv")
+    j30 = pd.read_csv("../results/j30.csv")
+    j60 = pd.read_csv("../results/j60.csv")
+    j90 = pd.read_csv("../results/j90.csv")
+    j120 = pd.read_csv("../results/j120.csv")
     res = [j30, j60, j90, j120]
     for r in res:
-        i = 0
+        i = 3
         total = len(r.values)
         media = 0
-        mediaOPT = 0
-        dif = 0
+        media2 = 0
+        dur = 0
+        dur2 = 0
         while i < total:
             res = r.values[i]
-            media = media + res[2]
-            mediaOPT = mediaOPT + res[1]
-            dif = dif + res[3]
-            i = i + 1
-        print("Media: " + str(media/total))
-        print("MediaOPT: " + str(mediaOPT/total))
-        print("Dif: " + str(dif / total))
+            if res[0] == 100:
+                media = media + res[2]
+                dur = dur + res[3]
+            elif res[0] == 200:
+                media2 = media2 + res[2]
+                dur2 = dur2 + res[3]
+            i = i + 4
+        print("Media: " + str(media / 50))
+        print("Ms: " + str(dur / 50))
+        print("Media2: " + str(media2 / 50))
+        print("Ms: " + str(dur2 / 50))
+
 
 def mediaRND():
     j30 = pd.read_csv("../results/j30.csv")
@@ -53,12 +59,12 @@ def mediaRND():
         mediaRND = 0
         while i < total:
             res = r.values[i]
-            rnd = r.values[i+1]
+            rnd = r.values[i + 1]
             media = media + float(res[3].replace(";", ""))
             mediaRND = mediaRND + float(rnd[3].replace(";", ""))
             i = i + 2
-        print("Media: " + str(media/(total/2)))
-        print("MediaRND: " + str(mediaRND/(total/2)))
+        print("Media: " + str(media / (total / 2)))
+        print("MediaRND: " + str(mediaRND / (total / 2)))
 
 
 def alphaRND(dir):
@@ -79,25 +85,65 @@ def alphaRND(dir):
 def compareRND(problemType, panda):
     outputPath = "../results/compareRND" + problemType + ".csv"
     outputFile = open(outputPath, "w")
-    outputFile.write("alpha,count\n")
+    outputFile.write("alpha, iterations, count\n")
     i = 0
-    cont = 0
-    contRnd = 0
-    draw = 0
+    c0 = 0
+    c1 = 0
+    c2 = 0
+    c3 = 0
+    c01 = 0
+    c11 = 0
+    c21 = 0
+    c31 = 0
     while i < len(panda.values):
-        res = panda.values[i]
-        rnd = panda.values[i+1]
-        if res[2] == rnd[2]:
-            draw = draw + 1
-        elif res[2] < rnd[2]:
-            cont = cont + 1
-        else:
-            contRnd = contRnd + 1
-        i = i + 2
-    outputFile.write("0.25, " + str(cont) + "\n")
-    outputFile.write("RND, " + str(contRnd) + "\n")
-    outputFile.write("DRAW, " + str(draw) + "\n")
+        vA = panda.values[i]
+        cA = panda.values[i + 1]
+        sA = panda.values[i + 2]
+        rA = panda.values[i + 3]
+        mA = [vA[2], cA[2], sA[2], rA[2]]
+        best = getMin(mA)
+        if best == 0:
+            c0 = c0 + 1
+        elif best == 1:
+            c1 = c1 + 1
+        elif best == 2:
+            c2 = c2 + 1
+        elif best == 3:
+            c3 = c3 + 1
+        vB = panda.values[i + 4]
+        cB = panda.values[i + 5]
+        sB = panda.values[i + 6]
+        rB = panda.values[i + 7]
+        m1 = [vB[2], cB[2], sB[2], rB[2]]
+        best1 = getMin(m1)
+        if best1 == 0:
+            c01 = c01 + 1
+        elif best1 == 1:
+            c11 = c11 + 1
+        elif best1 == 2:
+            c21 = c21 + 1
+        elif best1 == 3:
+            c31 = c31 + 1
+        i = i + 8
+    outputFile.write("0.25, 100, " + str(c0) + "\n")
+    outputFile.write("0.5, 100, " + str(c1) + "\n")
+    outputFile.write("0.75, 100,  " + str(c2) + "\n")
+    outputFile.write("RND, 200,  " + str(c3) + "\n")
+    outputFile.write("0.25, 200, " + str(c01) + "\n")
+    outputFile.write("0.5, 200, " + str(c11) + "\n")
+    outputFile.write("0.75, 200,  " + str(c21) + "\n")
+    outputFile.write("RND, 200,  " + str(c31) + "\n")
     outputFile.close()
+
+
+def getMin(m):
+    best = 0
+    valor = 100000000
+    for i in range(0, len(m)):
+        if m[i] < valor:
+            valor = m[i]
+            best = i
+    return best
 
 
 def processResults(dir):
@@ -132,7 +178,7 @@ def compareOpt(problemType, panda):
         opts = findLines(lines, name, start, problemType)
         if result[1] == "0.25" and opts is not None:
             diff = result[2] - opts[2]
-            outputFile.write(str(name ) + ", " + str(opts[2]) + ", " + str(result[2]) + ", " + str(diff) + "\n")
+            outputFile.write(str(name) + ", " + str(opts[2]) + ", " + str(result[2]) + ", " + str(diff) + "\n")
 
 
 def findLines(lines, name, start, problemType):
