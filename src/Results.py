@@ -136,33 +136,23 @@ def compareRND(problemType, panda):
     outputFile.close()
 
 
-def getMin(m):
-    best = 0
-    valor = 100000000
-    for i in range(0, len(m)):
-        if m[i] < valor:
-            valor = m[i]
-            best = i
-    return best
-
-
 def processResults(dir):
     if dir == Const.J30:
-        j30 = pd.read_csv("../results/j30.csv")
+        j30 = pd.read_csv("../results/j30Final.csv")
         compareOpt(Const.J30, j30)
     elif dir == Const.J60:
-        j60 = pd.read_csv("../results/j60.csv")
+        j60 = pd.read_csv("../results/j60Final.csv")
         compareOpt(Const.J60, j60)
     elif dir == Const.J90:
-        j90 = pd.read_csv("../results/j90.csv")
+        j90 = pd.read_csv("../results/j90Final.csv")
         compareOpt(Const.J90, j90)
     elif dir == Const.J120:
-        j120 = pd.read_csv("../results/j120.csv")
+        j120 = pd.read_csv("../results/j120Final-2.csv")
         compareOpt(Const.J120, j120)
 
 
 def compareOpt(problemType, panda):
-    outputPath = "../results/compareOPT" + problemType + ".csv"
+    outputPath = "../results/compareOPT" + problemType + "2.csv"
     outputFile = open(outputPath, "w")
     if problemType == Const.J30:
         inputPath = "../resources/opthrs/" + problemType + "opt.sm"
@@ -176,9 +166,9 @@ def compareOpt(problemType, panda):
     for result in panda.values:
         name = result[0]
         opts = findLines(lines, name, start, problemType)
-        if result[1] == "0.25" and opts is not None:
-            diff = result[2] - opts[2]
-            outputFile.write(str(name) + ", " + str(opts[2]) + ", " + str(result[2]) + ", " + str(diff) + "\n")
+        if result[1] == 200 and opts is not None:
+            diff = result[3] - opts[2]
+            outputFile.write(str(name) + ", " + str(opts[2]) + ", " + str(result[3]) + ", " + str(diff) + "\n")
 
 
 def findLines(lines, name, start, problemType):
