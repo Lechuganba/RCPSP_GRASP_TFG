@@ -19,38 +19,61 @@ def milisecs():
 
 
 def mediaMakespan():
-    j30 = pd.read_csv("../results/j30.csv")
-    j60 = pd.read_csv("../results/j60.csv")
-    j90 = pd.read_csv("../results/j90.csv")
-    j120 = pd.read_csv("../results/j120.csv")
+    j30 = pd.read_csv("../results/compare/compareOPTj30.csv")
+    j60 = pd.read_csv("../results/preliminar/j60.csv")
+    j90 = pd.read_csv("../results/preliminar/j90.csv")
+    j120 = pd.read_csv("../results/preliminar/j120.csv")
     res = [j30, j60, j90, j120]
     for r in res:
-        i = 3
+        i = 0
         total = len(r.values)
-        media = 0
-        media2 = 0
-        dur = 0
-        dur2 = 0
+        mediaOPT = 0
+        mediaGRASP = 0
+        durOPT = 0
+        durGRASP = 0
         while i < total:
             res = r.values[i]
             if res[0] == 100:
-                media = media + res[2]
-                dur = dur + res[3]
+                mediaOPT = mediaOPT + res[2]
+                durOPT = durOPT + res[3]
             elif res[0] == 200:
-                media2 = media2 + res[2]
-                dur2 = dur2 + res[3]
+                mediaGRASP = mediaGRASP + res[2]
+                durGRASP = durGRASP + res[3]
             i = i + 4
-        print("Media: " + str(media / 50))
-        print("Ms: " + str(dur / 50))
-        print("Media2: " + str(media2 / 50))
-        print("Ms: " + str(dur2 / 50))
+        print("Media: " + str(mediaOPT / 50))
+        print("Ms: " + str(durOPT / 50))
+        print("Media2: " + str(mediaGRASP / 50))
+        print("Ms: " + str(durGRASP / 50))
+
+
+def mediaMakespanFinal():
+    j30 = pd.read_csv("../results/compare/compareOPTj30Ms2.csv")
+    j60 = pd.read_csv("../results/compare/compareOPTj602.csv")
+    j90 = pd.read_csv("../results/compare/compareOPTj902.csv")
+    j120 = pd.read_csv("../results/compare/compareOPTj1202.csv")
+    res = [j30]
+    for r in res:
+        i = 0
+        total = len(r.values)
+        mediaOPT = 0
+        mediaGRASP = 0
+        diff = 0
+        while i < total:
+            res = r.values[i]
+            mediaOPT = mediaOPT + res[1]
+            mediaGRASP = mediaGRASP + res[2]
+            diff = diff + res[3]
+            i = i + 1
+        print("MediaOPT: " + str(round((mediaOPT / total),2)))
+        print("MediaGRASP: " + str(round((mediaGRASP / total),2)))
+        print("DIFFMEDIA: " + str(round((diff / total),2)))
 
 
 def mediaRND():
-    j30 = pd.read_csv("../results/j30.csv")
-    j60 = pd.read_csv("../results/j60.csv")
-    j90 = pd.read_csv("../results/j90.csv")
-    j120 = pd.read_csv("../results/j120.csv")
+    j30 = pd.read_csv("../results/preliminar/j30.csv")
+    j60 = pd.read_csv("../results/preliminar/j60.csv")
+    j90 = pd.read_csv("../results/preliminar/j90.csv")
+    j120 = pd.read_csv("../results/preliminar/j120.csv")
     res = [j30, j60, j90, j120]
     for r in res:
         i = 0
@@ -69,16 +92,16 @@ def mediaRND():
 
 def alphaRND(dir):
     if dir == Const.J30:
-        j30 = pd.read_csv("../results/j30.csv")
+        j30 = pd.read_csv("../results/preliminar/j30.csv")
         compareRND(Const.J30, j30)
     elif dir == Const.J60:
-        j60 = pd.read_csv("../results/j60.csv")
+        j60 = pd.read_csv("../results/preliminar/j60.csv")
         compareRND(Const.J60, j60)
     elif dir == Const.J90:
-        j90 = pd.read_csv("../results/j90.csv")
+        j90 = pd.read_csv("../results/preliminar/j90.csv")
         compareRND(Const.J90, j90)
     elif dir == Const.J120:
-        j120 = pd.read_csv("../results/j120.csv")
+        j120 = pd.read_csv("../results/preliminar/j120.csv")
         compareRND(Const.J120, j120)
 
 
@@ -138,16 +161,16 @@ def compareRND(problemType, panda):
 
 def processResults(dir):
     if dir == Const.J30:
-        j30 = pd.read_csv("../results/j30Final.csv")
+        j30 = pd.read_csv("../results/final/j30Final.csv")
         compareOpt(Const.J30, j30)
     elif dir == Const.J60:
-        j60 = pd.read_csv("../results/j60Final.csv")
+        j60 = pd.read_csv("../results/final/j60Final.csv")
         compareOpt(Const.J60, j60)
     elif dir == Const.J90:
-        j90 = pd.read_csv("../results/j90Final.csv")
+        j90 = pd.read_csv("../results/final/j90Final.csv")
         compareOpt(Const.J90, j90)
     elif dir == Const.J120:
-        j120 = pd.read_csv("../results/j120Final-2.csv")
+        j120 = pd.read_csv("../results/final/j120Final-2.csv")
         compareOpt(Const.J120, j120)
 
 

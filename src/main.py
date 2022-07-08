@@ -19,7 +19,7 @@ if __name__ == '__main__':
         '--alpha', type=str, default="0.5", help='Valor de la variable alpha, debe ser entre 0 y 1')
     args = parser.parse_args()
 
-    Results.processResults(Const.J120)
+    Results.mediaMakespanFinal()
     #Inicializamos la lectura del fichero con el método de la clase InputData
     #y creamos el proyecto
     # dirs = [Const.J120]
