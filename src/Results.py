@@ -23,7 +23,7 @@ def mediaMakespan():
     j60 = pd.read_csv("../results/preliminar/j60.csv")
     j90 = pd.read_csv("../results/preliminar/j90.csv")
     j120 = pd.read_csv("../results/preliminar/j120.csv")
-    res = [j30, j60, j90, j120]
+    res = [j120]
     for r in res:
         i = 0
         total = len(r.values)
@@ -51,7 +51,7 @@ def mediaMakespanFinal():
     j60 = pd.read_csv("../results/compare/compareOPTj602.csv")
     j90 = pd.read_csv("../results/compare/compareOPTj902.csv")
     j120 = pd.read_csv("../results/compare/compareOPTj1202.csv")
-    res = [j30]
+    res = [j120]
     for r in res:
         i = 0
         total = len(r.values)
@@ -64,9 +64,9 @@ def mediaMakespanFinal():
             mediaGRASP = mediaGRASP + res[2]
             diff = diff + res[3]
             i = i + 1
-        print("MediaOPT: " + str(round((mediaOPT / total),2)))
-        print("MediaGRASP: " + str(round((mediaGRASP / total),2)))
-        print("DIFFMEDIA: " + str(round((diff / total),2)))
+        print("MediaOPT: " + str(round((mediaOPT / total), 2)))
+        print("MediaGRASP: " + str(round((mediaGRASP / total), 2)))
+        print("DIFFMEDIA: " + str(round((diff / total), 2)))
 
 
 def mediaRND():
@@ -88,6 +88,35 @@ def mediaRND():
             i = i + 2
         print("Media: " + str(media / (total / 2)))
         print("MediaRND: " + str(mediaRND / (total / 2)))
+
+
+def desvRND():
+    j30 = pd.read_csv("../results/preliminar/j30.csv")
+    j60 = pd.read_csv("../results/preliminar/j60.csv")
+    j90 = pd.read_csv("../results/preliminar/j90.csv")
+    j120 = pd.read_csv("../results/preliminar/j120.csv")
+    res = [j120]
+    for r in res:
+        i = 4
+        total = len(r.values)
+        vent100 = []
+        cin100 = []
+        set100 = []
+        rnd100 = []
+        while i < total:
+            vent = r.values[i]
+            cin = r.values[i + 1]
+            set = r.values[i + 2]
+            rnd = r.values[i + 3]
+            vent100.append(vent[3])
+            cin100.append(cin[3])
+            set100.append(set[3])
+            rnd100.append(rnd[3])
+            i = i + 8
+        print(vent100)
+        print(cin100)
+        print(set100)
+        print(rnd100)
 
 
 def alphaRND(dir):

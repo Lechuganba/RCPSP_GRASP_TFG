@@ -1,4 +1,4 @@
-projectName, alpha, makespan, duration;
+projectName, it, alpha, makespan, duration;
 j12010_5,100,0.25,100,3.77
 j12010_5,100,0.5,99,3.74
 j12010_5,100,0.75,99,3.8
