@@ -33,7 +33,6 @@ def constructGRS(project, alpha):
                 scheme.append(sig)
                 executeActivitie(makespan, project, sig, executingJobs)
         if makespan == 0:
-            # addEntryRecDicc(makespan, project)
             getFinishedActivities(executingJobs, project, makespan, finishedJobs)
         if len(finishedJobs) == len(project.jobs) - 1:
             addEntryRecDicc(makespan, project)
