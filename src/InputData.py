@@ -53,7 +53,7 @@ def projectType(projectType):
 
 
 # Lectura de los datos del fichero
-def readFile(projectName, problemTypeAux,  fp):
+def readFile(projectName, problemTypeAux, fp):
     # Variables que vamos a utilizar
     # Diccionario de sucesores
     succDicc = {}

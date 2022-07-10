@@ -31,7 +31,7 @@ def constructGRS(project, alpha):
             sig = selectNext(restrictedCL)
             if sig is not None:
                 scheme.append(sig)
-                executeActivitie(makespan, project, sig, executingJobs)
+                executeActivity(makespan, project, sig, executingJobs)
         if makespan == 0:
             getFinishedActivities(executingJobs, project, makespan, finishedJobs)
         if len(finishedJobs) == len(project.jobs) - 1:
@@ -119,7 +119,7 @@ def selectNext(factibles):
 
 
 # Método ejecuta las actividades en un timeStep
-def executeActivitie(makespan, project, job, executingJobs):
+def executeActivity(makespan, project, job, executingJobs):
     job.executing = True
     job.initTime = makespan
     job.finishTime = makespan + job.makespan

@@ -188,6 +188,16 @@ def compareRND(problemType, panda):
     outputFile.close()
 
 
+def getMin(m):
+    best = 0
+    valor = 100000000
+    for i in range(0, len(m)):
+        if m[i] < valor:
+            valor = m[i]
+            best = i
+    return best
+
+
 def processResults(dir):
     if dir == Const.J30:
         j30 = pd.read_csv("../results/final/j30Final.csv")
